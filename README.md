@@ -1,5 +1,5 @@
 # wowza-video-api-demos-postman
-# Postman files for the Wowza Video API Demo series:
+# Postman files for the Wowza Video API Demo series as presented here:
 
 - [Session 1](https://www.wowza.com/blog/wowza-video-api-session-1-live-streaming-basics)
 - [Session 2](https://www.wowza.com/blog/wowza-video-api-session-2-recording-vod-streams-custom-stream-targets)
