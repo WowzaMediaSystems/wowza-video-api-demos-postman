@@ -1,12 +1,12 @@
 # wowza-video-api-demos-postman
 # Postman files for the Wowza Video API Demo series:
 
--[Session 1](https://www.wowza.com/blog/wowza-video-api-session-1-live-streaming-basics)
--[Session 2](https://www.wowza.com/blog/wowza-video-api-session-2-recording-vod-streams-custom-stream-targets)
--Session 3 - TBD
--Session 4 - TBD
--Session 5 - TBD
--Session 6 - TBD
+- [Session 1](https://www.wowza.com/blog/wowza-video-api-session-1-live-streaming-basics)
+- [Session 2](https://www.wowza.com/blog/wowza-video-api-session-2-recording-vod-streams-custom-stream-targets)
+- Session 3 - TBD
+- Session 4 - TBD
+- Session 5 - TBD
+- Session 6 - TBD
 
 ## Prerequisites
 A valid Wowza Video subscription and API access token.
