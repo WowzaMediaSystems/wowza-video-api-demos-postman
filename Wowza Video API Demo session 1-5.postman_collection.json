@@ -1,0 +1,2150 @@
+{
+	"info": {
+		"_postman_id": "3177a5ab-f6da-4515-8abb-4ec470017c7f",
+		"name": "Wowza Video API Demo",
+		"description": "This Collection is to demonstrate various aspects of the Wowza Video API organized into several Sets or Lessons that go from basic to advanced.\n\nI am using Collection wide variables to abstract things like the core API URL, the Auth Token as well as to save some session variables to auto-populate follow on calls.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11416181"
+	},
+	"item": [
+		{
+			"name": "Session 1",
+			"item": [
+				{
+					"name": "Create a Live Stream",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Get the value of the transcoder ID and set a environment variable for all subsequent calls",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"if (jsonData.hasOwnProperty('live_stream')) {",
+									"    pm.collectionVariables.set(\"transcoder_id\", jsonData.live_stream.id);",
+									"    pm.collectionVariables.set(\"stream_target_id\", jsonData.live_stream.stream_targets[0].id);",
+									"    pm.collectionVariables.set(\"player_id\", jsonData.live_stream.player_id);",
+									"",
+									"    console.log('Setting Transcoder ID: ', jsonData.live_stream.id)",
+									"    console.log('Setting Stream Target ID: ', jsonData.live_stream.stream_targets[0].id)",
+									"    console.log('Setting Player ID: ', jsonData.live_stream.player_id)",
+									"",
+									"}",
+									"else",
+									"    console.log('Create Failed: ', jsonData.meta.code)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"live_stream\": {\n     \"aspect_ratio_height\": 1080,\n     \"aspect_ratio_width\": 1920,\n     \"billing_mode\": \"pay_as_you_go\",\n     \"broadcast_location\": \"us_west_california\",\n     \"delivery_method\": \"push\",\n     \"encoder\": \"other_rtmp\",\n     \"name\": \"Wowza Video API Demo Live Stream\",\n     \"hosted_page\": false,\n     \"hosted_page_sharing_icons\": false,\n     \"player_responsive\": true,\n     \"transcoder_type\": \"transcoded\",\n     \"vod_stream\" : \"true\"\n   }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root_url}}/live_streams",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"live_streams"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a Live Stream with Stream Source",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Get the value of the transcoder ID and set a environment variable for all subsequent calls",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"if (jsonData.hasOwnProperty('live_stream')) {",
+									"    pm.collectionVariables.set(\"transcoder_id\", jsonData.live_stream.id);",
+									"    pm.collectionVariables.set(\"stream_target_id\", jsonData.live_stream.stream_targets[0].id);",
+									"    pm.collectionVariables.set(\"player_id\", jsonData.live_stream.player_id);",
+									"}",
+									"else",
+									"    console.log('Create Failed: ', jsonData.meta.code)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"live_stream\": {\n     \"aspect_ratio_height\": 1080,\n     \"aspect_ratio_width\": 1920,\n     \"billing_mode\": \"pay_as_you_go\",\n     \"broadcast_location\": \"us_west_california\",\n     \"delivery_method\": \"cdn\",\n     \"encoder\": \"other_rtmp\",\n     \"name\": \"Wowza API Demo Live Stream + Stream Source\",\n     \"hosted_page\": true,\n     \"hosted_page_title\": \"Wowza API Demo Hosted Page\",\n     \"hosted_page_sharing_icons\": false,\n     \"player_responsive\": true,\n     \"transcoder_type\": \"transcoded\",\n     \"use_stream_source\": true\n   }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root_url}}/live_streams",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"live_streams"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Start Live Stream",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{root_url}}/transcoders/{{transcoder_id}}/start",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"transcoders",
+								"{{transcoder_id}}",
+								"start"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Transcoder Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{root_url}}/transcoders/{{transcoder_id}}/state",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"transcoders",
+								"{{transcoder_id}}",
+								"state"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Player Info",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{root_url}}/players/{{player_id}}",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"players",
+								"{{player_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Transcoder Usage",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{root_url}}/usage/transcoders/{{transcoder_id}}",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"usage",
+								"transcoders",
+								"{{transcoder_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Live Viewer Data",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{root_url}}/usage/stream_targets/{{stream_target_id}}/live",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"usage",
+								"stream_targets",
+								"{{stream_target_id}}",
+								"live"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Live Stream Usage Summary",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{root_url}}/usage/stream_targets/{{stream_target_id}}",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"usage",
+								"stream_targets",
+								"{{stream_target_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Stop Live Stream",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{root_url}}/transcoders/{{transcoder_id}}/stop",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"transcoders",
+								"{{transcoder_id}}",
+								"stop"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a Live Stream",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{root_url}}/live_streams/{{transcoder_id}}",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"live_streams",
+								"{{transcoder_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Live Streams",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{root_url}}/live_streams",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"live_streams"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Session 1 covers the basic live stream workflow",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Session 2",
+			"item": [
+				{
+					"name": "Create a Live Stream with Recording",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Get the value of the transcoder ID and set a environment variable for all subsequent calls",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"if (jsonData.hasOwnProperty('live_stream')) {",
+									"    pm.collectionVariables.set(\"transcoder_id\", jsonData.live_stream.id);",
+									"    pm.collectionVariables.set(\"stream_target_id\", jsonData.live_stream.stream_targets[0].id);",
+									"    pm.collectionVariables.set(\"player_id\", jsonData.live_stream.player_id);",
+									"}",
+									"else",
+									"    console.log('Create Failed: ', jsonData.meta.code)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"live_stream\": {\n     \"aspect_ratio_height\": 1080,\n     \"aspect_ratio_width\": 1920,\n     \"billing_mode\": \"pay_as_you_go\",\n     \"broadcast_location\": \"us_west_california\",\n     \"delivery_method\": \"push\",\n     \"encoder\": \"other_rtmp\",\n     \"name\": \"Wowza API Demo Live Stream + Recording\",\n     \"hosted_page\": true,\n     \"hosted_page_title\": \"Wowza API Demo Hosted Page\",\n     \"hosted_page_sharing_icons\": false,\n     \"player_responsive\": true,\n     \"transcoder_type\": \"transcoded\",\n     \"recording\": true,\n     \"vod_stream\": true,\n     \"use_stream_source\": true\n   }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root_url}}/live_streams",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"live_streams"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Start Live Stream",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{root_url}}/transcoders/{{transcoder_id}}/start",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"transcoders",
+								"{{transcoder_id}}",
+								"start"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get MP4 Recordings",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{root_url}}/recordings",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"recordings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get VOD Streams",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{root_url}}/vod_streams",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"vod_streams"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get VOD Streams for a Transcoder",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{root_url}}/live_streams/transcoders/{{transcoder_id}}/vod_streams",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"live_streams",
+								"transcoders",
+								"{{transcoder_id}}",
+								"vod_streams"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a Custom Stream Target",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Get the value of the transcoder ID and set a environment variable for all subsequent calls",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"if (jsonData.hasOwnProperty('stream_target_custom')) {",
+									"    pm.collectionVariables.set(\"custom_stream_target_id\", jsonData.stream_target_custom.id);",
+									"}",
+									"else",
+									"    console.log('Create Failed: ', jsonData.meta.code)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"stream_target_custom\": {\n    \"name\": \"My Custom Stream Target\",\n    \"playback_urls\": {\n      \"rtmp\": \"rtmp://cp123456.live.edgefcs.net/live/[EVENT]@654321\"\n    },\n    \"primary_url\": \"rtmp://p.ep123456.i.akamaientrypoint.net/EntryPoint\",\n    \"provider\": \"rtmp\",\n    \"stream_name\": \"c8467d50@123456\"\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root_url}}/stream_targets/custom",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"stream_targets",
+								"custom"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Transcoder Outputs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Get the value of the transcoder ID and set a environment variable for all subsequent calls",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"if (jsonData.hasOwnProperty('outputs')) {",
+									"    pm.collectionVariables.set(\"transcoder_output_id\", jsonData.outputs[1].id);",
+									"}",
+									"else",
+									"    console.log('Create Failed: ', jsonData.meta.code)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{root_url}}/transcoders/{{transcoder_id}}/outputs",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"transcoders",
+								"{{transcoder_id}}",
+								"outputs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Attach Custom Target to Transcoder Outputs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Get the value of the transcoder ID and set a environment variable for all subsequent calls",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"if (jsonData.hasOwnProperty('output_stream_target')) {",
+									"    pm.collectionVariables.set(\"output_stream_target_id\", jsonData.output_stream_target.id);",
+									"}",
+									"else",
+									"    console.log('Create Failed: ', jsonData.meta.code)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"output_stream_target\": {\n    \"stream_target_id\": \"{{custom_stream_target_id}}\",\n    \"use_stream_target_backup_url\": false\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root_url}}/transcoders/{{transcoder_id}}/outputs/{{transcoder_output_id}}/output_stream_targets",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"transcoders",
+								"{{transcoder_id}}",
+								"outputs",
+								"{{transcoder_output_id}}",
+								"output_stream_targets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Disable Stream Target",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{root_url}}/transcoders/{{transcoder_id}}/outputs/{{transcoder_output_id}}/output_stream_targets/{{output_stream_target_id}}/disable",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"transcoders",
+								"{{transcoder_id}}",
+								"outputs",
+								"{{transcoder_output_id}}",
+								"output_stream_targets",
+								"{{output_stream_target_id}}",
+								"disable"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Enable Stream Target",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{root_url}}/transcoders/{{transcoder_id}}/outputs/{{transcoder_output_id}}/output_stream_targets/{{output_stream_target_id}}/enable",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"transcoders",
+								"{{transcoder_id}}",
+								"outputs",
+								"{{transcoder_output_id}}",
+								"output_stream_targets",
+								"{{output_stream_target_id}}",
+								"enable"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Custom Target from Transcoder Output",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"output_stream_target\": {\n    \"stream_target_id\": \"{{custom_stream_target_id}}\",\n    \"use_stream_target_backup_url\": true\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root_url}}/transcoders/{{transcoder_id}}/outputs/{{transcoder_output_id}}/output_stream_targets/{{output_stream_target_id}}",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"transcoders",
+								"{{transcoder_id}}",
+								"outputs",
+								"{{transcoder_output_id}}",
+								"output_stream_targets",
+								"{{output_stream_target_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a Custom Stream Target",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root_url}}/stream_targets/custom/{{custom_stream_target_id}}",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"stream_targets",
+								"custom",
+								"{{custom_stream_target_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Stop Live Stream",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{root_url}}/transcoders/{{transcoder_id}}/stop",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"transcoders",
+								"{{transcoder_id}}",
+								"stop"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Session 3",
+			"item": [
+				{
+					"name": "Create a Live Stream",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Get the value of the transcoder ID and set a environment variable for all subsequent calls",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"if (jsonData.hasOwnProperty('live_stream')) {",
+									"    pm.collectionVariables.set(\"transcoder_id\", jsonData.live_stream.id);",
+									"    pm.collectionVariables.set(\"stream_target_id\", jsonData.live_stream.stream_targets[0].id);",
+									"    pm.collectionVariables.set(\"player_id\", jsonData.live_stream.player_id);",
+									"",
+									"    console.log('Setting Transcoder ID: ', jsonData.live_stream.id)",
+									"    console.log('Setting Stream Target ID: ', jsonData.live_stream.stream_targets[0].id)",
+									"    console.log('Setting Player ID: ', jsonData.live_stream.player_id)",
+									"",
+									"}",
+									"else",
+									"    console.log('Create Failed: ', jsonData.meta.code)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"live_stream\": {\n     \"aspect_ratio_height\": 1080,\n     \"aspect_ratio_width\": 1920,\n     \"billing_mode\": \"pay_as_you_go\",\n     \"broadcast_location\": \"us_west_california\",\n     \"delivery_method\": \"push\",\n     \"encoder\": \"other_rtmp\",\n     \"name\": \"Wowza Video API Demo Live Stream\",\n     \"hosted_page\": true,\n     \"hosted_page_title\": \"Wowza API Demo Hosted Page\",\n     \"hosted_page_sharing_icons\": false,\n     \"player_responsive\": true,\n     \"transcoder_type\": \"transcoded\",\n     \"use_stream_source\": false\n   }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root_url}}/live_streams",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"live_streams"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Transcoder",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"transcoder\": {\n    \"name\": \"My Transcoder\",\n    \"buffer_size\": 4000,\n    \"description\": \"My Transcoder Description\",\n    \"idle_timeout\": 1200,\n    \"low_latency\": false,\n    \"stream_smoother\": false\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root_url}}/transcoders/{{transcoder_id}}",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"transcoders",
+								"{{transcoder_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Packager Chunk Size",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n\t\"property\": {\n        \"key\": \"chunkSize\",\n        \"section\": \"hls\",\n        \"value\": \"2\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root_url}}/stream_targets/{{stream_target_id}}/properties",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"stream_targets",
+								"{{stream_target_id}}",
+								"properties"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Increase playlist size for DVR",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"property\": {\n    \"key\": \"playlistSeconds\",\n    \"section\": \"playlist\",\n    \"value\": 3600\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root_url}}/stream_targets/{{stream_target_id}}/properties",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"stream_targets",
+								"{{stream_target_id}}",
+								"properties"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Enable Metadata",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"property\": {\n      \"key\": \"convertAMFData\",\n      \"section\": \"hls\",\n      \"value\": \"true\"\n    }\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root_url}}/stream_targets/{{stream_target_id}}/properties",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"stream_targets",
+								"{{stream_target_id}}",
+								"properties"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Enable AES-128 Encryption",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"properties\": [\n            { \n                \"section\": \"cupertino\",\n                \"key\": \"aes128Secret\", \n                \"value\": \"AaBbCc123456789DdEeFf123456789aa\"\n            },\n            { \n                \"section\": \"cupertino\",\n                \"key\": \"aes128Host\", \n                \"value\": \"https://mykeyserver.com\"\n            }\n    ]\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root_url}}/stream_targets/{{transcoder_id}}/properties",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"stream_targets",
+								"{{transcoder_id}}",
+								"properties"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Enable Loop Until Live File",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"property\": {\n       \"section\": \"file\",\n       \"key\": \"loopUntilLiveFile\",\n       \"value\": \"https://download.proctorcam.com/wowza/filler.mp4\"\n   }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root_url}}/transcoders/{{transcoder_id}}/properties",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"transcoders",
+								"{{transcoder_id}}",
+								"properties"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Set Loop Until Live to repeat",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"property\": {\n       \"section\": \"file\",\n       \"key\" : \"repeat\",\n       \"value\" : true\n   }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root_url}}/transcoders/{{transcoder_id}}/properties",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"transcoders",
+								"{{transcoder_id}}",
+								"properties"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Stream a File as Live",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"live_stream\": {\n     \"aspect_ratio_height\": 1080,\n     \"aspect_ratio_width\": 1920,\n     \"billing_mode\": \"pay_as_you_go\",\n     \"broadcast_location\": \"us_central_iowa\",\n     \"delivery_method\": \"pull\",\n     \"encoder\": \"file\",\n     \"hosted_page\": true,\n     \"hosted_page_sharing_icons\": true,\n     \"name\": \"My Streaming File Example\",\n     \"player_responsive\": true,\n     \"source_url\": \"https://storage.googleapis.com/qa-wse-recordings/MfzQj69N/recording_jdsp10jv/4-SurfLoop.mp4\",\n     \"transcoder_type\": \"transcoded\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root_url}}/live_streams",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"live_streams"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a Schediule",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Get the value of the transcoder ID and set a environment variable for all subsequent calls",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"if (jsonData.hasOwnProperty('schedule')) {",
+									"    pm.collectionVariables.set(\"schedule_id\", jsonData.schedule.id);",
+									"}",
+									"else",
+									"    console.log('Create Failed: ', jsonData.meta.code)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"schedule\": {\n    \"action_type\": \"start_stop\",\n    \"name\": \"Scheduled start for my camera\",\n    \"recurrence_type\": \"recur\",\n    \"transcoder_id\": \"{{transcoder_id}}\",\n    \"end_repeat\": \"2022-04-29T00:00:00.000Z\",\n    \"recurrence_data\": \"monday,tuesday,wednesday,thursday,friday\",\n    \"start_repeat\": \"2022-04-15T00:00:00.000Z\",\n    \"start_transcoder\": \"2022-04-15T00:00:00.000Z\",\n    \"stop_transcoder\": \"2022-04-15T00:15:00.000Z\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root_url}}/schedules",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"schedules"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Disable a Schedule",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"live_stream\": {\n     \"aspect_ratio_height\": 1080,\n     \"aspect_ratio_width\": 1920,\n     \"billing_mode\": \"pay_as_you_go\",\n     \"broadcast_location\": \"us_west_california\",\n     \"delivery_method\": \"cdn\",\n     \"encoder\": \"other_rtmp\",\n     \"name\": \"Wowza API Demo Live Stream\",\n     \"hosted_page\": true,\n     \"hosted_page_title\": \"Wowza API Demo Hosted Page\",\n     \"hosted_page_sharing_icons\": false,\n     \"player_responsive\": true,\n     \"player_type\": \"wowza_player\",\n     \"transcoder_type\": \"transcoded\",\n     \"recording\": true,\n     \"vod_stream\": true,\n     \"use_stream_source\": false\n   }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root_url}}/schedules/{{schedule_id}}/disable",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"schedules",
+								"{{schedule_id}}",
+								"disable"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Enable a Schedule",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"live_stream\": {\n     \"aspect_ratio_height\": 1080,\n     \"aspect_ratio_width\": 1920,\n     \"billing_mode\": \"pay_as_you_go\",\n     \"broadcast_location\": \"us_west_california\",\n     \"delivery_method\": \"cdn\",\n     \"encoder\": \"other_rtmp\",\n     \"name\": \"Wowza API Demo Live Stream\",\n     \"hosted_page\": true,\n     \"hosted_page_title\": \"Wowza API Demo Hosted Page\",\n     \"hosted_page_sharing_icons\": false,\n     \"player_responsive\": true,\n     \"player_type\": \"wowza_player\",\n     \"transcoder_type\": \"transcoded\",\n     \"recording\": true,\n     \"vod_stream\": true,\n     \"use_stream_source\": false\n   }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root_url}}/schedules/{{schedule_id}}/enable",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"schedules",
+								"{{schedule_id}}",
+								"enable"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a Schediule",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"schedule\": {\n    \"action_type\": \"start_stop\",\n    \"name\": \"Scheduled start for my camera\",\n    \"recurrence_type\": \"recur\",\n    \"transcoder_id\": \"{{transcoder_id}}\",\n    \"end_repeat\": \"2022-04-29T00:00:00.000Z\",\n    \"recurrence_data\": \"monday,tuesday,wednesday,thursday,friday\",\n    \"start_repeat\": \"2022-03-015T00:00:00.000Z\",\n    \"start_transcoder\": \"2022-03-015T00:00:00.000Z\",\n    \"stop_transcoder\": \"2022-04-29T23:59:59.999Z\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root_url}}/schedules/{{schedule_id}}",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"schedules",
+								"{{schedule_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Session 4",
+			"item": [
+				{
+					"name": "Create a Live Stream with WebRTC ingest",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Get the value of the transcoder ID and set a environment variable for all subsequent calls",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"if (jsonData.hasOwnProperty('live_stream')) {",
+									"    pm.collectionVariables.set(\"transcoder_id\", jsonData.live_stream.id);",
+									"    pm.collectionVariables.set(\"stream_target_id\", jsonData.live_stream.stream_targets[0].id);",
+									"    pm.collectionVariables.set(\"player_id\", jsonData.live_stream.player_id);",
+									"",
+									"// Add the SDP URL",
+									"// Add the playback URL",
+									"",
+									"    console.log('Setting Transcoder ID: ', jsonData.live_stream.id)",
+									"    console.log('Setting Stream Target ID: ', jsonData.live_stream.stream_targets[0].id)",
+									"    console.log('Setting Player ID: ', jsonData.live_stream.player_id)",
+									"",
+									"}",
+									"else",
+									"    console.log('Create Failed: ', jsonData.meta.code)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"live_stream\": {\n     \"aspect_ratio_height\": 1080,\n     \"aspect_ratio_width\": 1920,\n     \"billing_mode\": \"pay_as_you_go\",\n     \"broadcast_location\": \"us_west_california\",\n     \"delivery_method\": \"push\",\n     \"encoder\": \"other_webrtc\",\n     \"name\": \"Wowza Video API Demo Live Stream - WebRTC\",\n     \"hosted_page\": true,\n     \"hosted_page_title\": \"Wowza API Demo Hosted Page\",\n     \"hosted_page_sharing_icons\": false,\n     \"player_responsive\": true,\n     \"transcoder_type\": \"transcoded\"\n   }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root_url}}/live_streams",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"live_streams"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Decrease Latency (Optional)",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"transcoder\": {\n    \"buffer_size\": 0,\n    \"low_latency\": true,\n    \"stream_smoother\": false\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root_url}}/transcoders/{{transcoder_id}}",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"transcoders",
+								"{{transcoder_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Set Direct Viewer Limit",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"transcoder\": {\n    \"play_maximum_connections\": 100\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root_url}}/transcoders/{{transcoder_id}}",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"transcoders",
+								"{{transcoder_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Start Live Stream",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{root_url}}/transcoders/{{transcoder_id}}/start",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"transcoders",
+								"{{transcoder_id}}",
+								"start"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Publish the WebRTC stream",
+					"request": {
+						"method": "VIEW",
+						"header": [],
+						"url": {
+							"raw": "https://wowza.com/webrtc/publish ",
+							"protocol": "https",
+							"host": [
+								"wowza",
+								"com"
+							],
+							"path": [
+								"webrtc",
+								"publish "
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Playback the WebRTC stream (HLS and WebRTC)",
+					"request": {
+						"method": "VIEW",
+						"header": [],
+						"url": {
+							"raw": "https://www.wowza.com/webrtc/play",
+							"protocol": "https",
+							"host": [
+								"www",
+								"wowza",
+								"com"
+							],
+							"path": [
+								"webrtc",
+								"play"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Stop Live Stream",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{root_url}}/transcoders/{{transcoder_id}}/stop",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"transcoders",
+								"{{transcoder_id}}",
+								"stop"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a Live Stream",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{root_url}}/live_streams/{{transcoder_id}}",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"live_streams",
+								"{{transcoder_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a Real Time Stream",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Get the value of the transcoder ID and set a environment variable for all subsequent calls",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"if (jsonData.hasOwnProperty('real_time_stream')) {",
+									"    pm.collectionVariables.set(\"rts_stream_id\", jsonData.real_time_stream.id);",
+									"    ",
+									"}",
+									"else",
+									"    console.log('Create Failed: ', jsonData.meta.code)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"real_time_stream\": {\n    \"name\": \"API Demo Real Time Stream\"\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root_url}}/real_time",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"real_time"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Real Time Streams",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{root_url}}/real_time",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"real_time"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Real Time Stream Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{root_url}}/real_time/{{rts_stream_id}}",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"real_time",
+								"{{rts_stream_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Real Time Stream",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"real_time_stream\": {\n        \"name\": \"MyRealTimeStream\"\n    }\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root_url}}/real_time/{{rts_stream_id}}",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"real_time",
+								"{{rts_stream_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Real Time Stream",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{root_url}}/real_time/{{rts_stream_id}}",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"real_time",
+								"{{rts_stream_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Session 5",
+			"item": [
+				{
+					"name": "Create Asset",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Get the value of the asset ID and set a environment variable for all subsequent calls",
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"if (jsonData.hasOwnProperty('asset')) {",
+									"    pm.collectionVariables.set(\"asset_id\", jsonData.asset.id);",
+									"    pm.collectionVariables.set(\"upload_url\", jsonData.asset.upload_url);",
+									"    ",
+									"    console.log('Setting Asset ID: ', jsonData.asset.id)",
+									"    console.log('Setting Asset Upload URL: ', jsonData.asset.upload_url)",
+									"   ",
+									"}",
+									"else",
+									"    console.log('Create Failed: ', jsonData.meta.code)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"asset\": {\n    \"file_name\": \"porsche-video.mp4\"\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root_url}}/assets",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"assets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Asset",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"warning": "This is a duplicate header and will be overridden by the Content-Type header generated by Postman.",
+								"key": "Content-Type",
+								"value": "video/mp4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "file",
+							"file": {
+								"src": ""
+							}
+						},
+						"url": {
+							"raw": "{{upload_url}}",
+							"host": [
+								"{{upload_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Notify Upload",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"asset\": {\n    \"duration\": 9,\n    \"file_size\": 9844557\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root_url}}/assets/{{asset_id}}/upload_completed",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"assets",
+								"{{asset_id}}",
+								"upload_completed"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Notify Upload Failed",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"asset\": {\n    \"reason\": \"Token Expired\",\n    \"status\": 404\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root_url}}/assets/{{asset_id}}/upload_failed",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"assets",
+								"{{asset_id}}",
+								"upload_failed"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Asset Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{root_url}}/assets/{{asset_id}}",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"assets",
+								"{{asset_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Asset",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"asset\": {\n    \"description\": \"Porsche GT3 driving in a tunnel\",\n    \"name\": \"Porsche GT3\",\n    \"tags\": [\n      \"auto\",\n      \"porsche\",\n      \"tunnel\"\n      ]\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root_url}}/assets/{{asset_id}}",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"assets",
+								"{{asset_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Publish Asset",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"asset\": {\n    \"playback_enabled\": true\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root_url}}/assets/{{asset_id}}",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"assets",
+								"{{asset_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Unpublish Asset",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"asset\": {\n    \"playback_enabled\": false\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{root_url}}/assets/{{asset_id}}",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"assets",
+								"{{asset_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Asset",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{root_url}}/assets/{{asset_id}}",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"assets",
+								"{{asset_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List All Assets",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{root_url}}/assets",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"assets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List All Assets with Pagination",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{root_url}}/assets?page=2&per_page=5",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"assets"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "2"
+								},
+								{
+									"key": "per_page",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Assets",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{root_url}}/assets?query=jeep",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"assets"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "jeep"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Assets sort by Name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{root_url}}/assets?query=Tim&sort_column=name&sort_direction=asc",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"assets"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "Tim"
+								},
+								{
+									"key": "sort_column",
+									"value": "name"
+								},
+								{
+									"key": "sort_direction",
+									"value": "asc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Assets sort by Creation Date",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{root_url}}/assets?query=Tim&sort_column=created_at&sort_direction=desc",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"assets"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "Tim"
+								},
+								{
+									"key": "sort_column",
+									"value": "created_at"
+								},
+								{
+									"key": "sort_direction",
+									"value": "desc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Asset Tags",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{root_url}}/asset_tags",
+							"host": [
+								"{{root_url}}"
+							],
+							"path": [
+								"asset_tags"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{auth_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "transcoder_id",
+			"value": ""
+		},
+		{
+			"key": "root_url",
+			"value": "https://api.video.wowza.com/api/v1.8",
+			"type": "string"
+		},
+		{
+			"key": "stream_target_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "player_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "custom_stream_target_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "schedule_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "transcoder_output_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "output_stream_target_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "root_url_rts",
+			"value": "https://api.cloud.wowza.com/api/v1.8",
+			"type": "string"
+		},
+		{
+			"key": "rts_stream_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "asset_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "upload_url",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "vod_stream_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "uptime_id",
+			"value": ""
+		}
+	]
+}
