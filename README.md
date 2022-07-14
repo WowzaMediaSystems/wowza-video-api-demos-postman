@@ -5,7 +5,7 @@
 - [Session 2](https://www.wowza.com/blog/wowza-video-api-session-2-recording-vod-streams-custom-stream-targets)
 - [Session 3](https://www.wowza.com/blog/wowza-video-api-session-3-advanced-workflows)
 - [Session 4](https://www.wowza.com/blog/wowza-video-api-session-4-webrtc-real-time-streaming-at-scale)
-- Session 5 - TBD
+- [Session 5](https://www.wowza.com/blog/wowza-video-api-session-5-asset-management)
 - Session 6 - TBD
 
 ## Prerequisites
