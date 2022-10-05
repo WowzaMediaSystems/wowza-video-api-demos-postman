@@ -6,7 +6,7 @@
 - [Session 3](https://www.wowza.com/blog/wowza-video-api-session-3-advanced-workflows)
 - [Session 4](https://www.wowza.com/blog/wowza-video-api-session-4-webrtc-real-time-streaming-at-scale)
 - [Session 5](https://www.wowza.com/blog/wowza-video-api-session-5-asset-management)
-- Session 6 - TBD
+- [Session 6](https://www.wowza.com/blog/wowza-video-api-session-6-analytics)
 
 ## Prerequisites
 A valid Wowza Video subscription and API access token.
